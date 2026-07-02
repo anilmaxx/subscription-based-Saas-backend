@@ -2,11 +2,14 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 const authMiddleware = async (req, res, next) => {
-    // get token from common sources
-    const authHeader = req.header('Authorization') || req.header('authorization');
-    if (!authHeader) return res.status(401).json({ message: 'Access Denied' });
-
-    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : authHeader.trim();
+      // Get token from cookie or header
+     let token = req.cookies && req.cookies.token;
+    if (!token) {
+        const authHeader = req.header('Authorization');
+            if (authHeader && authHeader.startsWith('Bearer ')) {
+            token = authHeader.split(' ')[1];
+        }
+  }
     if (!token) {
         return res.status(401).json({ message: 'No token, authorization denied' });
     }
