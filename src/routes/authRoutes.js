@@ -88,6 +88,12 @@ router.post('/login', async (req, res)=>{
     }
 )
 
+//POST /api/auth/logout
+router.post('/logout', (req, res) => {
+  res.clearCookie('token');
+  res.json({ message: 'Logged out successfully' });
+});
+
 
 
 module.exports = router; 

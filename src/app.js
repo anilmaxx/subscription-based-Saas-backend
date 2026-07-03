@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose= require('mongoose');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 dotenv.config();
 
 const authRoutes = require('./routes/authRoutes')
@@ -9,7 +11,16 @@ const planRoutes = require('./routes/planRoutes')
 
 const app = express();
 app.use(express.json());
+
+//cookies
 app.use(cookieParser());
+
+// Security Headers
+app.use(helmet());
+
+//RateLimiting
+const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
+app.use(limiter);
 
 //mongoDB conection
 const mongoUri = process.env.MONGODB_URI;
